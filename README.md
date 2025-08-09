@@ -1,73 +1,65 @@
-# Welcome to your Lovable project
+# Settle Debts – Frontend
 
-## Project info
+A clean, minimal React + TypeScript app to browse groups, add shared expenses, and view settlements.
 
-**URL**: https://lovable.dev/projects/ee896487-3c7a-4394-8716-ebda588f5fb3
+## Tech
+- React + Vite + TypeScript
+- TailwindCSS (token-based, light mode)
+- React Router
+- React Query (TanStack Query)
+- shadcn/ui components
 
-## How can I edit this code?
+## Quick start
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/ee896487-3c7a-4394-8716-ebda588f5fb3) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
+1) Install dependencies
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+pnpm i
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2) Configure environment
+```sh
+cp .env.example .env
+# Optionally edit VITE_API_BASE_URL
+```
 
-# Step 3: Install the necessary dependencies.
+3) Run the app
+```sh
+pnpm dev
+```
+App runs locally; by default it expects the backend at `http://localhost:8080`.
+
+## Environment
+- `VITE_API_BASE_URL` (default `http://localhost:8080`)
+
+## Backend API contract
+The app consumes an existing backend with the following endpoints:
+- `GET /api/groups` → Group[]
+- `POST /api/groups` → 201 { "status":"Resource saved" }
+- `GET /api/groups/{gid}/expenses` → Expense[]
+- `POST /api/groups/{gid}/expenses` → 201 { "status":"Resource saved" }
+- `GET /api/groups/{gid}/settlements` → Settlement[]
+
+Errors:
+- 400/404 → { "error": "message" }
+
+## Pages
+- `/` Groups list: create/open groups
+- `/groups/:gid` Group detail with tabs:
+  - Expenses: table + “Add expense” modal
+  - Settlements: list or empty state
+- `*` Not found
+
+## Development notes
+- Data fetching via React Query; base fetch helper handles JSON and error messages
+- Query keys: ["groups"], ["expenses", gid], ["settlements", gid]
+- Forms validate required fields and positive amounts, show toasts on success/error
+
+## NPM users
+```sh
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/ee896487-3c7a-4394-8716-ebda588f5fb3) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project was bootstrapped with Lovable. For more info about using Lovable, see https://docs.lovable.dev/
