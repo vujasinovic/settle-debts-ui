@@ -132,7 +132,7 @@ export const NewExpenseModal = ({ gid, members }: NewExpenseModalProps) => {
           </div>
         </div>
         <DialogFooter>
-          <Button disabled={isPending} onClick={() => mutateAsync()}>Save</Button>
+          <Button disabled={isPending} onClick={async () => { try { await mutateAsync(); } catch {} }}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

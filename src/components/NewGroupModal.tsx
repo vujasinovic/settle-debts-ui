@@ -69,7 +69,7 @@ export const NewGroupModal = () => {
           </div>
         </div>
         <DialogFooter>
-          <Button disabled={isPending} onClick={() => mutateAsync()}>Create</Button>
+          <Button disabled={isPending} onClick={async () => { try { await mutateAsync(); } catch {} }}>Create</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

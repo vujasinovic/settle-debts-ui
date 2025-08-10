@@ -1,15 +1,26 @@
 import { Expense, Group } from "@/types";
 
-const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL ?? "http://localhost:8080";
+const isLocalDev = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL ?? (isLocalDev ? "" : "http://localhost:8080");
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(init?.headers || {}),
-    },
-    ...init,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(init?.headers || {}),
+      },
+      ...init,
+    });
+  } catch (err: any) {
+    const isLocalhostBase = typeof BASE_URL === "string" && BASE_URL.includes("localhost");
+    const isRemotePreview = typeof window !== "undefined" && !["localhost", "127.0.0.1"].includes(window.location.hostname);
+    const hint = isLocalhostBase && isRemotePreview
+      ? "Backend at localhost is not reachable from this preview. Expose it publicly and set VITE_API_BASE_URL."
+      : "Network error";
+    throw new Error(`${hint}${err?.message ? `: ${err.message}` : ""}`);
+  }
 
   const contentType = res.headers.get("content-type") || "";
   const isJson = contentType.includes("application/json");
